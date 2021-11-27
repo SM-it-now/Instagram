@@ -3,26 +3,7 @@
 {% block content %}
 <h1>Login</h1>
 {{ request.user }}
-<input type="text" id="username">
-<input type="password" id="password">
-<button id="login">login</button>
-<button id="logout">logout</button>
 
-<script src="https://code.jquery.com/jquery-3.6.0.js"
-        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-        crossorigin="anonymous"></script>
-<!--로그인 스크립트-->
-<script>
-    $(document).ready(function () {
-    $('#login').click(function() {
-        $.post('/apis/v1/users/login/', {'username': $('#username').val(), 'password': $('#password').val()}, function() {
-            location.reload();
-        }).fail(function(data) {
-            alert(data.responseJSON.message);
-        });
-});
-});
-</script>
 <!--로그아웃 스크립트-->
 <script>
     $(document).ready(function () {
