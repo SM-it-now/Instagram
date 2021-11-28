@@ -1,8 +1,31 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Login</h1>
+<h1>Home</h1>
 {{ request.user }}
+<input type="submit" id="logout" value="logout">
+
+<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+        crossorigin="anonymous"></script>
+
+
+<!--Content-->
+<hr>
+<div class="post">
+    <div class="user-block">
+        {% for content in contents %}
+        {% for image in content.image_set.all %}
+        <img class="img-circle img-bordered-sm" src="{{ image.image.url }}" alt="User Image">
+        {% endfor %}
+        <span class="username">
+            <a href="#">{{ content.user.username }}</a>
+            <a href="#" class="pull-right btn-box-tool"><i class="fa fa-times"></i></a>
+        </span>
+        <p>{{ content.text }}</p>
+    </div>
+    {% endfor %}
+</div>
+
 
 <!--로그아웃 스크립트-->
 <script>
