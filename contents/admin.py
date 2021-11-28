@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Content, Image
+from .models import Content, Image, FollowRelation
 
 
 # Register your models here.
@@ -12,5 +12,11 @@ class ContentAdmin(admin.ModelAdmin):
     inlines = [ImageInline]
     list_display = ('user', 'created_at', 'text',)
 
+
+class FollowRelationAdmin(admin.ModelAdmin):
+    pass
+
+
 admin.site.register(Content, ContentAdmin)
 admin.site.register(Image)
+admin.site.register(FollowRelation, FollowRelationAdmin)

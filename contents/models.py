@@ -19,6 +19,9 @@ class Content(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
 
+    class Meta:
+        ordering = ['-created_at']
+
 
 # 사용자가 업로드 한 이미지의 네임을 그대로 사용하지 않고, 16자리의 고유한 아이디를 생성. --> uuid
 def image_upload_to(instance, filename):
@@ -39,5 +42,8 @@ class Image(BaseModel):
         ordering = ['order']
 
 
+class FollowRelation(BaseModel):
+    follower = models.OneToOneField(User, on_delete=models.CASCADE, related_name='follower')
+    followee = models.ManyToManyField(User, related_name='followee')
 
 
