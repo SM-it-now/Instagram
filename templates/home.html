@@ -42,15 +42,15 @@
           style="background-color:whitesmoke;">
         <div class="dz-message" data-dz-message><span>드래그 드랍하거나 클릭하여 이미지 선택</span></div>
         <div class="fallback">
-            <input name="file" type="file"/>
+            <input name="file" type="file">
         </div>
     </form>
     <div class="form-group">
         <label>아래에 글을 입력해주세요.</label>
-        <textarea class="form-control rounded-0 id=text" rows="3"></textarea>
+        <textarea class="form-control rounded-0" id="text" rows="3"></textarea>
     </div>
     <div style="text-align: right;">
-        <button type="button" class="btn btn-danger" id="upload">작성하기</button>
+        <button type="button" class="btn btn-success" id="upload">작성하기</button>
     </div>
 </div>
 
@@ -66,16 +66,16 @@
             {% endfor %}
             <div>
                 <span class="username left-things">
-                    <a href="#">{{ content.user.username }}</a>
+                    <a href="#" class="text-info">{{ content.user.username }}</a>
                     <a href="#" class="pull-right btn-box-tool"><i class="fa fa-times"></i></a>
                 </span>
             </div>
             <p>{{ content.text }}</p>
         </div>
-        <br>
-        {% endfor %}
     </div>
 </div>
+<br>
+{% endfor %}
 
 
 <!--로그아웃 스크립트-->
