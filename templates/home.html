@@ -1,29 +1,78 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
+{% block head %}
+<!--DropZone script-->
+<script src="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone-min.js"></script>
+<link href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" rel="stylesheet" type="text/css"/>
+<!--style.css-->
+<link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+{% endblock %}
+
 {% block content %}
-<h1>Home</h1>
-{{ request.user }}
-<input type="submit" id="logout" value="logout">
+<!--navbar-->
+<nav class="instagram-nav navbar navbar-expand-lg navbar-light bg-white">
+    <a class="navbar-border text-danger col-sm-8" href="#"><b>Instagram</b></a>
+    <div class="collapse-nav collapse navbar-collapse col-sm-4" id="navbarText">
+        <span class="navbar-text sol-sm-3">
+            {{ request.user }}
+        </span>
+        <span class="navbar-text col-sm-3">
+            <a href="#">친구목록</a>
+        </span>
+        <span class="navbar-text col-sm-3">
+            <a href="#">로그아웃</a>
+        </span>
+    </div>
+</nav>
 
 <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
         crossorigin="anonymous"></script>
+<!--Dropzone-->
+<script src="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone-min.js"></script>
+<link href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" rel="stylesheet" type="text/css"/>
 
 
 <!--Content-->
-<hr>
-<div class="post">
-    <div class="user-block">
-        {% for content in contents %}
-        {% for image in content.image_set.all %}
-        <img class="img-circle img-bordered-sm" src="{{ image.image.url }}" alt="User Image">
-        {% endfor %}
-        <span class="username">
-            <a href="#">{{ content.user.username }}</a>
-            <a href="#" class="pull-right btn-box-tool"><i class="fa fa-times"></i></a>
-        </span>
-        <p>{{ content.text }}</p>
+<br>
+<br>
+<div id="formContainer">
+    <form action="{% url 'apis_v1_content_create' %}" class="dropzone" id="uploader"
+          style="background-color:whitesmoke;">
+        <div class="dz-message" data-dz-message><span>드래그 드랍하거나 클릭하여 이미지 선택</span></div>
+        <div class="fallback">
+            <input name="file" type="file"/>
+        </div>
+    </form>
+    <div class="form-group">
+        <label>아래에 글을 입력해주세요.</label>
+        <textarea class="form-control reounded-0 id=text" rows="3"></textarea>
     </div>
-    {% endfor %}
+    <div style="text-align: right;">
+        <button type="button" class="btn btn-danger" id="upload">작성하기</button>
+    </div>
+</div>
+
+<br>
+<br>
+{% for content in contents %}
+{% for image in content.image_set.all %}
+<div class="content">
+    <div class="post">
+        <div class="user-block">
+            <h5 class="text-info" style="text-align: left;">{{ content.user.username }}</h5>
+            <img class="img-info img-circle img-bordered-sm" src="{{ image.image.url }}" alt="User Image">
+            {% endfor %}
+<!--            <span class="username">-->
+<!--            <a href="#">{{ content.user.username }}</a>-->
+<!--            <a href="#" class="pull-right btn-box-tool"><i class="fa fa-times"></i></a>-->
+<!--            </span>-->
+            <p>{{ content.text }}</p>
+        </div>
+        <br>
+        {% endfor %}
+    </div>
 </div>
 
 
@@ -36,5 +85,42 @@
         })
 });
 });
+
+
+
+</script>
+
+<script>
+    Dropzone.autoDiscover = false;
+
+    var dropZoneUploader = new Dropzone('form#uploader', {
+    init: function () {
+        var dropzone = this;
+
+        $('#upload').click(function () {
+            dropZoneUploader.processQueue();
+        });
+
+        dropzone.on('sending', function(file, xhr, formData) {
+        formData.append('text', $('#text').val());
+        });
+    },
+    parallelUploads: 10,
+    autoProcessQueue: false,
+    type: 'POST',
+    success: function () {
+        location.reload();
+    },
+    error: function(e) {
+        console.log(e)
+        alert('에러가 발생했습니다. 다시 시도해주세요.');
+    },
+    acceptedFiles: '.jpeg,.jpg,.png,.gif',
+    uploadMultiple: true,
+    });
+
+
+
+
 </script>
 {% endblock %}
