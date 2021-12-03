@@ -152,5 +152,16 @@ class RelationDeleteView(BaseView):
         return self.response({})
 
 
+class UserInfoGetView(BaseView):
+    def get(self, request):
+        username = request.GET.get('username','').strip()
+        try:
+            user = User.objects.get(username = username)
+        except user.DoesNotExist:
+            self.response(message = "사용자를 찾을 수 없습니다.", status = 404)
+
+        return self.response({'username': username, 'email': user.email, 'id': user.id})
+
+
 
 

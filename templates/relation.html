@@ -56,6 +56,35 @@
 
 <script>
     $(document).ready(function(){
+            $('#search').click(function(){
+            var username = $('#searchUserName').val();
+            var followeesIds = "{{followees_ids}}";
+            $.get("{% url 'apis_v1_user_get' %}", {'username' :username}, function(obj){
+                $('#searchResult').html(obj.data.username);
+                var $searchRelationButton = $('#searchFollow button');
+                $searchRelationButton.data('user-id', obj.data.id);
+
+                console.log(username)
+                console.log(obj.data.id)
+                console.log(followeesIds)
+                console.log(followeesIds.indexOf(obj.data.id))
+
+                if (followeesIds.indexOf(obj.data.id) > -1){
+                    $searchRelationButton.removeClass('follow');
+                    $searchRelationButton.addClass('unfollow');
+                    $searchRelationButton.html('언팔로우');
+                } else {
+                    $searchRelationButton.removeClass('unfollow');
+                    $searchRelationButton.addClass('follow');
+                    $searchRelationButton.html('팔로우');
+                }
+                $('#searchFollow').show();
+            }).fail(function(data){
+                $('#searchResult').html(data.responseJSON.message);
+            });
+        });
+
+
         $('content').delegate('.follow', 'click', function(e){
             var userId = $(e.currentTarget).data('user-id');
             $.post("{% url 'apis_v1_relation_create' %}", {id: userId}, function(){
@@ -74,6 +103,7 @@
             });
         });
     });
+
 </script>
 
 {% endblock %}
