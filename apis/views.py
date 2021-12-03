@@ -10,7 +10,7 @@ from django.core.validators import validate_email, ValidationError
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-from contents.models import Content, Image
+from contents.models import Content, Image, FollowRelation
 
 
 # Create your views here.
@@ -31,6 +31,7 @@ class BaseView(View):
     # 유저 생성 및 예외처리 구현
 
 
+# 회원가입
 class UserCreateView(BaseView):
     # post 입력 처리 및 검증 구현
     def post(self, request):
@@ -74,12 +75,14 @@ class UserLoginView(BaseView):
         return self.response()
 
 
+# 로그아웃
 class UserLogoutView(BaseView):
     def get(self, request):
         logout(request)
         return self.response()
 
 
+# 게시글 생성
 class ContentCreateView(BaseView):
     def post(self, request):
         text = request.POST.get('text', '').strip()
@@ -89,4 +92,65 @@ class ContentCreateView(BaseView):
             Image.objects.create(content=content, image=file, order=idx)
 
         return self.response({})
+
+
+# 팔로우
+@method_decorator(login_required, name='dispatch')
+class RelationCreateView(BaseView):
+    def post(self, request):
+        # 팔로우 버튼을 눌렀을 때, 발생하는 api
+        try:
+            user_id = request.POST.get('id', '')
+        except ValueError:
+            return self.response(message='잘못된 요청입니다.', status=400)
+
+        # 팔로우 관계가 있는지 확인하는 api
+        try:
+            relation = FollowRelation.objects.get(follower=request.user)
+        except FollowRelation.DoesNotExist:
+            relation = FollowRelation.objects.create(follower=request.user)
+
+        # followee에 저장 api
+        try:
+            if user_id == request.user.id:
+                raise IntegrityError
+
+            relation.followee.add(user_id)
+            relation.save()
+        except IntegrityError:
+            return self.response(message='잘못된 요청입니다.', status=400)
+
+        return self.response({})
+
+
+# 언팔로우
+@method_decorator(login_required, name='dispatch')
+class RelationDeleteView(BaseView):
+    def post(self, request):
+        # 언팔로우 버튼을 눌렀을 때, 사용자가 있는지 확인하는 api
+        try:
+            user_id = request.POST.get('id', '')
+        except ValueError:
+            return self.response(message='잘못된 요청입니다.', status=400)
+
+        # 언팔로우 할수있는 관계가 형성되어있는지 확인하는 api
+        try:
+            relation = FollowRelation.objects.get(follower=request.user)
+        except FollowRelation.DoesNotExist:
+            return self.response(message='잘못된 요청입니다.', status=400)
+
+        # 자기자신을 언팔로우 하는지 확인하는 api
+        try:
+            if user_id == request.user.id:
+                raise IntegrityError
+
+            relation.followee.remove(user_id)
+            relation.save()
+        except IntegrityError:
+            return self.response(message='잘못된 요청입니다.', status=400)
+
+        return self.response({})
+
+
+
 

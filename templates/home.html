@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block content %}
-<!--navbar-->
+
 <nav class="instagram-nav navbar navbar-expand-lg navbar-light bg-white">
     <a class="navbar-border text-danger col-sm-8" href="/"><b>Instagram</b></a>
     <div class="collapse-nav collapse navbar-collapse col-sm-4" id="navbarText">
@@ -19,7 +19,7 @@
             {{ request.user }}
         </span>
         <span class="navbar-text col-sm-3">
-            <a href="#">친구목록</a>
+            <a href="{% url 'relation' %}">친구목록</a>
         </span>
         <span class="navbar-text col-sm-3">
             <a href="#">로그아웃</a>
@@ -88,11 +88,6 @@
 });
 });
 
-
-
-
-
-
 </script>
 
 <script>
@@ -123,12 +118,6 @@
     acceptedFiles: '.jpeg,.jpg,.png,.gif',
     uploadMultiple: true,
     });
-
-
-
-
-
-
 
 </script>
 {% endblock %}

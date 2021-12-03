@@ -6,13 +6,14 @@ from django.db.models import Prefetch
 from .models import Content, FollowRelation
 
 # Create your views here.
+# 메인화면 뷰
 @method_decorator(login_required, name='dispatch')
 class HomeView(TemplateView):
     template_name = 'home.html'
 
     # 직접 pk를 지적하지 않기 때문에, get_context_data 함수를 추가해주어야 함. --> **kwargs에 pk값이 들어온다.
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super(HomeView, self).get_context_data(**kwargs)
 
         user = self.request.user
 
@@ -32,3 +33,27 @@ class HomeView(TemplateView):
             user__id__in=lookup_user_ids
         )
         return context
+
+
+# 팔로우 화면 뷰
+@method_decorator(login_required, name='dispatch')
+class RelationView(TemplateView):
+    template_name = 'relation.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(RelationView, self).get_context_data(**kwargs)
+        user = self.request.user
+
+        # 내가 팔로우 하고 있는 사람들을 확인.
+        try:
+            followers = FollowRelation.objects.get(follower=user).followee.all()
+            context['followees'] = followers
+            context['followees_ids'] = list(followers.values_list('id', flat=True))
+        except FollowRelation.DoesNotExist:
+            pass
+
+        # 날 팔로우 하는 사람들을 확인.
+        context['followers'] = FollowRelation.objects.select_related('follower').filter(followee__in=[user])
+
+        return context
+
