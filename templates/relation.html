@@ -4,7 +4,7 @@
 <link href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" rel="stylesheet" type="text/css"/>
 {% endblock %}
 
-{% block content %}
+{% block body %}
 
 <div class="all" style="width :600px; margin:0 auto;">
 
@@ -56,6 +56,12 @@
 
 <script>
     $(document).ready(function(){
+            $('#logout').click(function (){
+                $.get('/apis/v1/users/logout/', {}, function() {
+                location.reload();
+                });
+            });
+
             $('#search').click(function(){
             var username = $('#searchUserName').val();
             var followeesIds = "{{followees_ids}}";
@@ -85,7 +91,7 @@
         });
 
 
-        $('content').delegate('.follow', 'click', function(e){
+        $('body').delegate('.follow', 'click', function(e){
             var userId = $(e.currentTarget).data('user-id');
             $.post("{% url 'apis_v1_relation_create' %}", {id: userId}, function(){
                 location.reload();
@@ -94,7 +100,7 @@
             });
         });
 
-        $('content').delegate('.unfollow', 'click', function(e){
+        $('body').delegate('.unfollow', 'click', function(e){
             var userId = $(e.currentTarget).data('user-id');
             $.post("{% url 'apis_v1_relation_delete' %}", {id: userId}, function(){
                 location.reload();

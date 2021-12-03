@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
 <!--navbar-->
-{% block content %}
+{% block body %}
 <nav class="instagram-nav navbar navbar-expand-lg navbar-light bg-white">
     <a class="navbar-border text-danger col-sm-8" href="/"><b>Instagram</b></a>
-    <div class="collapse-nav collapse navbar-collapse col-sm-4" id="navbarText">
+    <div class="collapse-nav collapse navbar-collapse col-sm-4" id="navbarText" style="display-block !important; text-align: right;">
         <span class="navbar-text sol-sm-3">
             {{ request.user }}
         </span>
@@ -12,7 +12,7 @@
             <a href="{% url 'relation' %}">친구목록</a>
         </span>
         <span class="navbar-text col-sm-3">
-            <a href="#">로그아웃</a>
+            <a href="javascript:void(0); id=logout">로그아웃</a>
         </span>
     </div>
 </nav>
